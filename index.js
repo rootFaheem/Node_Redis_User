@@ -52,4 +52,44 @@ app.post("/user/search", (req, res, next) => {
     });
 });
 
+// add user form
+app.get("/user/add", (req, res, next) => {
+    res.render("addusers");
+});
+
+// add user processing
+app.post("/user/add", (req, res, next) => {
+    let id = req.body.id;
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let email = req.body.email;
+    let phone = req.body.phone;
+
+    client.hmset(
+        id,
+        [
+            "first_name",
+            first_name,
+            "last_name",
+            last_name,
+            "email",
+            email,
+            "phone",
+            phone
+        ],
+        (err, reply) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(reply);
+            res.redirect("/");
+        }
+    );
+});
+
+app.delete("/user/delete/:id", (req, res, next) => {
+    client.del(req.params.id);
+    res.redirect("/");
+});
+
 app.listen(PORT, () => console.log("server running at port: " + PORT));
